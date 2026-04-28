@@ -2,13 +2,13 @@
 
 A lightweight IntelliJ IDEA plugin that inserts a UUID at the current cursor position with a single shortcut.
 
-**Hotkey**: `Ctrl+Shift+U` | **IDE**: IntelliJ 2025.1+ | **Java**: 21
+**Hotkey**: `Alt+Shift+U` | **IDE**: IntelliJ 2025.1+ | **Java**: 21
 
 ---
 
 ## Features
 
-- **Insert UUID at cursor** — press `Ctrl+Shift+U` to insert a UUID at the current editor position.
+- **Insert UUID at cursor** — press `Alt+Shift+U` to insert a UUID at the current editor position.
 - **Replace selected text** — if text is selected before pressing the shortcut, it is replaced with the generated UUID.
 - **Single undoable action** — the insert/replace is wrapped in a `CommandProcessor` command, so one `Ctrl+Z` reverts the entire operation.
 - **Configurable format** — choose from five UUID formats in `Settings → Tools → UUID Plugin`.
@@ -30,7 +30,7 @@ A lightweight IntelliJ IDEA plugin that inserts a UUID at the current cursor pos
 
 1. Open any editor in IntelliJ IDEA.
 2. Place the cursor where you want the UUID.
-3. Press **`Ctrl+Shift+U`**.
+3. Press **`Alt+Shift+U`**.
 4. A UUID in your chosen format is inserted.
 
 If text is selected, the UUID replaces the selection. You can also trigger the action from:
@@ -53,7 +53,7 @@ The new format takes effect immediately — no IDE restart required.
 
 1. Build the plugin (see [Development](#development) below) or download the release ZIP.
 2. Open IntelliJ IDEA → **File → Settings → Plugins → ⚙️ → Install Plugin from Disk…**.
-3. Select `uuid-plugin-1.0.0.zip`.
+3. Select `uuid-plugin-1.0.7.zip`.
 4. Restart the IDE.
 
 ### From source
@@ -64,7 +64,7 @@ gradle clean buildPlugin
 
 The plugin artifact is created at:
 ```
-build/distributions/uuid-plugin-1.0.0.zip
+build/distributions/uuid-plugin-1.0.7.zip
 ```
 
 ---
@@ -100,7 +100,7 @@ src/
 Defined in `plugin.xml`:
 - **Action ID**: `UUIDInsertAction`
 - **Groups**: `EditorPopupMenu` (right-click), `ToolsMenu` (Tools dropdown)
-- **Shortcut**: `Ctrl+Shift+U` on the default keymap
+- **Shortcut**: `Alt+Shift+U` on the default keymap
 - **Platform dependency**: `com.intellij.modules.platform`
 
 ---
@@ -166,12 +166,12 @@ The `check` lifecycle task depends on `unitTest`, so `gradle build` still runs t
 | Plugin ID | `com.th0rn.uuid-plugin` |
 | Group ID | `com.th0rn` |
 | Artifact ID | `uuid-plugin` |
-| Version | `1.0.0` |
+| Version | `1.0.7` |
 | IntelliJ since-build | `251.*` |
 | IntelliJ plugin version | `2.0.0` |
 | Java source/target | `21` |
 | Persisted config file | `uuid-plugin.xml` (IDE config directory) |
-| Plugin ZIP location | `build/distributions/uuid-plugin-1.0.0.zip` |
+| Plugin ZIP location | `build/distributions/uuid-plugin-1.0.7.zip` |
 
 ---
 
