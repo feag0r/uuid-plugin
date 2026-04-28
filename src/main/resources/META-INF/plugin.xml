@@ -1,0 +1,29 @@
+<idea-plugin>
+    <id>com.th0rn.uuid-plugin</id>
+    <name>UUID Insert</name>
+    <vendor email="th0rn@example.com" url="https://github.com/th0rn/uuid-plugin">th0rn</vendor>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationService
+            serviceImplementation="com.th0rn.uuidplugin.UUIDSettings"/>
+        <applicationConfigurable
+            parentId="tools"
+            instance="com.th0rn.uuidplugin.UUIDSettingsConfigurable"
+            id="com.th0rn.uuidplugin.settings"
+            displayName="UUID Plugin"/>
+    </extensions>
+
+    <actions>
+        <action id="UUIDInsertAction"
+                class="com.th0rn.uuidplugin.UUIDInsertAction"
+                text="Insert UUID"
+                description="Insert UUID at current cursor position"
+                popup="true">
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+            <keyboard-shortcut keymap="$default" first-shortcut="Ctrl+Shift+U"/>
+        </action>
+    </actions>
+</idea-plugin>

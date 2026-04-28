@@ -1,0 +1,63 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.intellij.platform' version '2.0.0'
+}
+
+group = 'com.th0rn'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+    intellijPlatform {
+        defaultRepositories()
+    }
+}
+
+dependencies {
+    intellijPlatform {
+        intellijIdeaCommunity '2025.1'
+        instrumentationTools()
+    }
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+intellijPlatform {
+    publishing {
+        token = System.getenv('PUBLISH_TOKEN')
+    }
+    testing {
+        test {
+            useJUnitPlatform()
+        }
+    }
+}
+
+tasks.register('unitTest', Test) {
+    description = 'Run unit tests (no IntelliJ sandbox required)'
+    group = 'verification'
+
+    useJUnitPlatform()
+    classpath = sourceSets.test.runtimeClasspath
+    testClassesDirs = files(sourceSets.test.java.classesDirectory)
+}
+
+test {
+    enabled = false
+}
+
+check {
+    dependsOn unitTest
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+tasks {
+    buildSearchableOptions {
+        enabled = false
+    }
+}
