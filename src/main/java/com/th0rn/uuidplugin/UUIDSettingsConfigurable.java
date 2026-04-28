@@ -16,7 +16,8 @@ public class UUIDSettingsConfigurable implements SearchableConfigurable {
     private JPanel settingsPanel;
     private JCheckBox uppercaseCheckBox;
     private JTextField delimiterField;
-    private JTextField bracesField;
+    private JTextField leftBraceField;
+    private JTextField rightBraceField;
     private JLabel previewLabel;
     private UUIDSettings settings;
 
@@ -63,16 +64,26 @@ public class UUIDSettingsConfigurable implements SearchableConfigurable {
 
         gbc.gridx = 0;
         gbc.gridy = 2;
-        settingsPanel.add(new JLabel("Braces:"), gbc);
+        settingsPanel.add(new JLabel("Left brace:"), gbc);
 
-        bracesField = new JTextField(2);
-        bracesField.getDocument().addDocumentListener(new SimpleDocumentListener(this::updatePreview));
+        leftBraceField = new JTextField(2);
+        leftBraceField.getDocument().addDocumentListener(new SimpleDocumentListener(this::updatePreview));
         gbc.gridx = 1;
         gbc.gridy = 2;
-        settingsPanel.add(bracesField, gbc);
+        settingsPanel.add(leftBraceField, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 3;
+        settingsPanel.add(new JLabel("Right brace:"), gbc);
+
+        rightBraceField = new JTextField(2);
+        rightBraceField.getDocument().addDocumentListener(new SimpleDocumentListener(this::updatePreview));
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        settingsPanel.add(rightBraceField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
         gbc.gridwidth = 2;
         gbc.insets = new Insets(10, 3, 3, 3);
         previewLabel = new JLabel("Preview: 550e8400-e29b-41d4-a716-446655440000");
@@ -84,9 +95,10 @@ public class UUIDSettingsConfigurable implements SearchableConfigurable {
     private void updatePreview() {
         if (previewLabel == null) return;
         String delimiter = delimiterField.getText();
-        String braces = bracesField.getText();
+        String leftBrace = leftBraceField.getText();
+        String rightBrace = rightBraceField.getText();
         boolean upper = uppercaseCheckBox.isSelected();
-        previewLabel.setText("Preview: " + UUIDFormat.generate(upper, delimiter, braces));
+        previewLabel.setText("Preview: " + UUIDFormat.generate(upper, delimiter, leftBrace, rightBrace));
     }
 
     @Override
@@ -98,12 +110,19 @@ public class UUIDSettingsConfigurable implements SearchableConfigurable {
         }
         settings.setDelimiter(delimiter);
 
-        String braces = bracesField.getText();
-        if (braces.length() > 2) {
-            braces = braces.substring(0, 2);
-            bracesField.setText(braces);
+        String leftBrace = leftBraceField.getText();
+        if (leftBrace.length() > 2) {
+            leftBrace = leftBrace.substring(0, 2);
+            leftBraceField.setText(leftBrace);
         }
-        settings.setBraces(braces);
+        settings.setLeftBrace(leftBrace);
+
+        String rightBrace = rightBraceField.getText();
+        if (rightBrace.length() > 2) {
+            rightBrace = rightBrace.substring(0, 2);
+            rightBraceField.setText(rightBrace);
+        }
+        settings.setRightBrace(rightBrace);
 
         settings.setUppercase(uppercaseCheckBox.isSelected());
     }
@@ -113,7 +132,8 @@ public class UUIDSettingsConfigurable implements SearchableConfigurable {
         settings = UUIDSettings.getInstance();
         uppercaseCheckBox.setSelected(settings.isUppercase());
         delimiterField.setText(settings.getDelimiter());
-        bracesField.setText(settings.getBraces());
+        leftBraceField.setText(settings.getLeftBrace());
+        rightBraceField.setText(settings.getRightBrace());
         updatePreview();
     }
 
@@ -121,7 +141,8 @@ public class UUIDSettingsConfigurable implements SearchableConfigurable {
     public boolean isModified() {
         if (uppercaseCheckBox.isSelected() != settings.isUppercase()) return true;
         if (!delimiterField.getText().equals(settings.getDelimiter())) return true;
-        if (!bracesField.getText().equals(settings.getBraces())) return true;
+        if (!leftBraceField.getText().equals(settings.getLeftBrace())) return true;
+        if (!rightBraceField.getText().equals(settings.getRightBrace())) return true;
         return false;
     }
 

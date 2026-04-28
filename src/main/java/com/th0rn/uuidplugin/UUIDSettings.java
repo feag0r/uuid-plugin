@@ -15,7 +15,8 @@ public class UUIDSettings implements PersistentStateComponent<UUIDSettings> {
 
     private boolean uppercase;
     private String delimiter = "-";
-    private String braces = "";
+    private String leftBrace = "";
+    private String rightBrace = "";
 
     public boolean isUppercase() {
         return uppercase;
@@ -33,12 +34,20 @@ public class UUIDSettings implements PersistentStateComponent<UUIDSettings> {
         this.delimiter = delimiter;
     }
 
-    public String getBraces() {
-        return braces;
+    public String getLeftBrace() {
+        return leftBrace;
     }
 
-    public void setBraces(String braces) {
-        this.braces = braces;
+    public void setLeftBrace(String leftBrace) {
+        this.leftBrace = leftBrace;
+    }
+
+    public String getRightBrace() {
+        return rightBrace;
+    }
+
+    public void setRightBrace(String rightBrace) {
+        this.rightBrace = rightBrace;
     }
 
     @Nullable
@@ -51,7 +60,8 @@ public class UUIDSettings implements PersistentStateComponent<UUIDSettings> {
     public void loadState(@NotNull UUIDSettings state) {
         this.uppercase = state.uppercase;
         this.delimiter = state.delimiter;
-        this.braces = state.braces;
+        this.leftBrace = state.leftBrace;
+        this.rightBrace = state.rightBrace;
     }
 
     public static UUIDSettings getInstance() {

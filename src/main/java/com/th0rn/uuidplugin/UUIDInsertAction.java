@@ -46,7 +46,7 @@ public class UUIDInsertAction extends AnAction {
                 .map(caret -> new Op(
                         caret.getSelectionStart(),
                         caret.getSelectionEnd(),
-                        UUIDFormat.generate(settings.isUppercase(), settings.getDelimiter(), settings.getBraces())))
+                        UUIDFormat.generate(settings.isUppercase(), settings.getDelimiter(), settings.getLeftBrace(), settings.getRightBrace())))
                 .sorted((a, b) -> Integer.compare(b.start, a.start))
                 .toList();
 

@@ -6,11 +6,11 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UUIDFormatTest {
 
     private static final String DELIMITER_DASH = "-";
-    private static final String NO_BRACES = "";
+    private static final String NO_BRACE = "";
 
     @Test
     public void testStandardFormat() {
-        String result = UUIDFormat.generate(false, DELIMITER_DASH, NO_BRACES);
+        String result = UUIDFormat.generate(false, DELIMITER_DASH, NO_BRACE, NO_BRACE);
         assertNotNull(result);
         assertEquals(36, result.length());
         assertEquals('-', result.charAt(8));
@@ -21,7 +21,7 @@ public class UUIDFormatTest {
 
     @Test
     public void testUpperCaseFormat() {
-        String result = UUIDFormat.generate(true, DELIMITER_DASH, NO_BRACES);
+        String result = UUIDFormat.generate(true, DELIMITER_DASH, NO_BRACE, NO_BRACE);
         assertNotNull(result);
         assertEquals(36, result.length());
         assertEquals(result, result.toUpperCase());
@@ -29,7 +29,7 @@ public class UUIDFormatTest {
 
     @Test
     public void testNoDashesFormat() {
-        String result = UUIDFormat.generate(false, "", NO_BRACES);
+        String result = UUIDFormat.generate(false, "", NO_BRACE, NO_BRACE);
         assertNotNull(result);
         assertEquals(32, result.length());
         assertFalse(result.contains("-"));
@@ -37,7 +37,7 @@ public class UUIDFormatTest {
 
     @Test
     public void testCurlyBracesFormat() {
-        String result = UUIDFormat.generate(false, DELIMITER_DASH, "{}");
+        String result = UUIDFormat.generate(false, DELIMITER_DASH, "{", "}");
         assertNotNull(result);
         assertEquals(38, result.length());
         assertTrue(result.startsWith("{"));
@@ -46,7 +46,7 @@ public class UUIDFormatTest {
 
     @Test
     public void testUnderscoreFormat() {
-        String result = UUIDFormat.generate(false, "_", NO_BRACES);
+        String result = UUIDFormat.generate(false, "_", NO_BRACE, NO_BRACE);
         assertNotNull(result);
         assertEquals(36, result.length());
         assertFalse(result.contains("-"));
@@ -55,7 +55,7 @@ public class UUIDFormatTest {
 
     @Test
     public void testUpperCaseWithCurlyBraces() {
-        String result = UUIDFormat.generate(true, DELIMITER_DASH, "{}");
+        String result = UUIDFormat.generate(true, DELIMITER_DASH, "{", "}");
         assertNotNull(result);
         assertEquals(result, result.toUpperCase());
         assertTrue(result.startsWith("{"));
@@ -64,24 +64,33 @@ public class UUIDFormatTest {
 
     @Test
     public void testUpperCaseNoDashes() {
-        String result = UUIDFormat.generate(true, "", NO_BRACES);
+        String result = UUIDFormat.generate(true, "", NO_BRACE, NO_BRACE);
         assertNotNull(result);
         assertEquals(32, result.length());
         assertEquals(result, result.toUpperCase());
     }
 
     @Test
-    public void testSingleCharBraces() {
-        String result = UUIDFormat.generate(false, DELIMITER_DASH, "|");
+    public void testDifferentBraces() {
+        String result = UUIDFormat.generate(false, DELIMITER_DASH, "[", "]");
         assertNotNull(result);
-        assertTrue(result.startsWith("|"));
-        assertTrue(result.endsWith("|"));
+        assertTrue(result.startsWith("["));
+        assertTrue(result.endsWith("]"));
+    }
+
+    @Test
+    public void testLeftBraceOnly() {
+        String result = UUIDFormat.generate(false, DELIMITER_DASH, "{", NO_BRACE);
+        assertNotNull(result);
+        assertTrue(result.startsWith("{"));
+        assertFalse(result.endsWith("}"));
+        assertEquals(37, result.length());
     }
 
     @Test
     public void testMultipleGenerationsAreUnique() {
-        String first = UUIDFormat.generate(false, DELIMITER_DASH, NO_BRACES);
-        String second = UUIDFormat.generate(false, DELIMITER_DASH, NO_BRACES);
+        String first = UUIDFormat.generate(false, DELIMITER_DASH, NO_BRACE, NO_BRACE);
+        String second = UUIDFormat.generate(false, DELIMITER_DASH, NO_BRACE, NO_BRACE);
         assertNotEquals(first, second);
     }
 
