@@ -3,6 +3,7 @@ package com.th0rn.uuidplugin;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.diagnostic.Logger;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,11 +39,13 @@ public class UUIDInsertAction extends AnAction {
         int start = selection.getSelectionStart();
         int end = selection.getSelectionEnd();
 
-        if (start != end) {
-            document.replaceString(start, end, uuid);
-        } else {
-            document.insertString(start, uuid);
-        }
+        WriteCommandAction.runWriteCommandAction(project, () -> {
+            if (start != end) {
+                document.replaceString(start, end, uuid);
+            } else {
+                document.insertString(start, uuid);
+            }
+        });
 
         LOG.info("Inserted UUID at offset " + start + " (format: " + format.getDisplayName() + ")");
     }

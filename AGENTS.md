@@ -32,7 +32,7 @@ export PATH="$HOME/.local/tools/gradle-8.5/bin:$PATH"
 |---|---|
 | `UUIDFormat.java` | Enum with `generate()` — produces UUID string per format. Pure Java, no IntelliJ deps. |
 | `UUIDSettings.java` | `PersistentStateComponent` — stores user's chosen format. Persisted to `uuid-plugin.xml` in IDE config. |
-| `UUIDInsertAction.java` | `AnAction` — reads format from settings, generates UUID, inserts/replaces at cursor via `CommandProcessor`. |
+| `UUIDInsertAction.java` | `AnAction` — reads format from settings, generates UUID, inserts/replaces at cursor via `WriteCommandAction`. Must use write-safe API. |
 | `UUISettingsConfigurable.java` | `SearchableConfigurable` — settings UI under Tools → UUID Plugin. |
 | `plugin.xml` | Plugin descriptor. Registers action (`Ctrl+Shift+U`), settings service, configurable. |
 
