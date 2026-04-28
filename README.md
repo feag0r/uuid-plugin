@@ -14,18 +14,31 @@ Works flawlessly in **GigaIDE** (Russian fork of IntelliJ IDEA) as well.
 - **Multi-caret support** — place multiple carets and insert a unique UUID at each position.
 - **Replace selected text** — if text is selected before pressing the shortcut, it is replaced with the generated UUID.
 - **Single undoable action** — the insert/replace is wrapped in a `CommandProcessor` command, so one `Ctrl+Z` reverts the entire operation.
-- **Configurable format** — choose from five UUID formats in `Settings → Tools → UUID Plugin`.
-- **Persisted settings** — your chosen format survives IDE restarts.
+- **Flexible format** — configure three settings in `Settings → Tools → UUID Plugin` for any UUID style.
+- **Persisted settings** — your preferences survive IDE restarts.
 
-### Available UUID Formats
+### Format Configuration
 
-| Format | Display Name | Example |
+Instead of a fixed list of formats, combine three settings to build any UUID style:
+
+| Setting | Description | Limits |
 |---|---|---|
-| `STANDARD` | Standard | `550e8400-e29b-41d4-a716-446655440000` |
-| `UPPER` | Upper Case | `550E8400-E29B-41D4-A716-446655440000` |
-| `NO_DASHES` | No Dashes | `550e8400e29b41d4a716446655440000` |
-| `CURLY_BRACES` | Curly Braces | `{550e8400-e29b-41d4-a716-446655440000}` |
-| `UNDERSCORE` | Underscore | `550e8400_e29b_41d4_a716_446655440000` |
+| **Case** | Upper or lower case | Checkbox |
+| **Delimiter** | Replaces dashes between UUID segments | Up to 2 chars; empty = no dashes |
+| **Braces** | Characters wrapping the entire UUID | Up to 2 chars; empty = no wrapping |
+
+Examples with the same `550e8400-e29b-41d4-a716-446655440000` UUID:
+
+| Case | Delimiter | Braces | Result |
+|---|---|---|---|
+| Lower | `-` | _(empty)_ | `550e8400-e29b-41d4-a716-446655440000` |
+| Upper | `-` | _(empty)_ | `550E8400-E29B-41D4-A716-446655440000` |
+| Lower | _(empty)_ | _(empty)_ | `550e8400e29b41d4a716446655440000` |
+| Lower | `-` | `{}` | `{550e8400-e29b-41d4-a716-446655440000}` |
+| Lower | `_` | _(empty)_ | `550e8400_e29b_41d4_a716_446655440000` |
+| Upper | _(empty)_ | `[]` | `[550E8400E29B41D4A716446655440000]` |
+
+A **live preview** updates in real time as you edit delimiter and braces in the settings panel.
 
 ---
 
@@ -46,8 +59,11 @@ Multiple carets are supported — each caret gets its own unique UUID in one ope
 ### Changing the format
 
 1. Go to **File → Settings → Tools → UUID Plugin**.
-2. Select your preferred format from the dropdown.
-3. Click **Apply**.
+2. Check/uncheck **Upper case** for case toggling.
+3. Enter up to 2 characters in **Delimiter** (e.g. `-`, `_`, or leave empty for no dashes).
+4. Enter up to 2 characters in **Braces** (e.g. `{}`, `[]`, `||`, or leave empty for none).
+5. See the **live preview** update as you type.
+6. Click **Apply**.
 
 The new format takes effect immediately — no IDE restart required.
 
@@ -59,7 +75,7 @@ The new format takes effect immediately — no IDE restart required.
 
 1. Build the plugin (see [Development](#development) below) or download the release ZIP.
 2. Open IntelliJ IDEA (or **GigaIDE**) → **File → Settings → Plugins → ⚙️ → Install Plugin from Disk…**.
-3. Select `uuid-plugin-1.0.7.zip`.
+3. Select `uuid-plugin-1.1.0.zip`.
 4. Restart the IDE.
 
 ### From source
@@ -70,7 +86,7 @@ gradle clean buildPlugin
 
 The plugin artifact is created at:
 ```
-build/distributions/uuid-plugin-1.0.7.zip
+build/distributions/uuid-plugin-1.1.0.zip
 ```
 
 ---
@@ -82,10 +98,10 @@ The plugin consists of four Java classes and a `plugin.xml` descriptor:
 ```
 src/
 ├── main/java/com/th0rn/uuidplugin/
-│   ├── UUIDFormat.java              # Enum: five UUID formats with generate()
-│   ├── UUIDSettings.java            # PersistentStateComponent — stores chosen format
+│   ├── UUIDFormat.java              # Utility — generate(uppercase, delimiter, braces)
+│   ├── UUIDSettings.java            # PersistentStateComponent — stores 3 user settings
 │   ├── UUIDInsertAction.java        # AnAction — inserts/replaces UUID at cursor
-│   └── UUIDSettingsConfigurable.java # SearchableConfigurable — settings UI panel
+│   └── UUIDSettingsConfigurable.java # SearchableConfigurable — settings UI with live preview
 ├── main/resources/META-INF/
 │   └── plugin.xml                   # Action registration, keymap, extensions
 └── test/java/com/th0rn/uuidplugin/
@@ -96,10 +112,10 @@ src/
 
 | Class | Role | IntelliJ dependencies |
 |---|---|---|
-| `UUIDFormat` | Pure-Java enum. Each variant knows how to `generate()` a UUID string. | None |
-| `UUIDSettings` | Implements `PersistentStateComponent`. Stores the user's chosen `UUIDFormat`. | `@State`, `@Storage`, `ApplicationManager` |
-| `UUIDInsertAction` | Extends `AnAction`. Gets editor, reads settings, generates UUID, inserts/replaces text via `CommandProcessor`. | `AnAction`, `CommandProcessor`, `Editor` |
-| `UUIDSettingsConfigurable` | Implements `SearchableConfigurable`. Renders a combo box for format selection under Tools settings. | `SearchableConfigurable`, Swing |
+| `UUIDFormat` | Pure-Java utility. Generates UUID strings from three parameters: case, delimiter, braces. | None |
+| `UUIDSettings` | Implements `PersistentStateComponent`. Stores `uppercase`, `delimiter`, and `braces`. | `@State`, `@Storage`, `ApplicationManager` |
+| `UUIDInsertAction` | Extends `AnAction`. Gets editor, reads settings, generates UUID via `UUIDFormat.generate()`, inserts/replaces text via `WriteCommandAction`. | `AnAction`, `WriteCommandAction`, `Editor` |
+| `UUIDSettingsConfigurable` | Implements `SearchableConfigurable`. Renders checkbox + text fields with live preview under Tools settings. | `SearchableConfigurable`, Swing |
 
 ### Action registration
 
@@ -152,7 +168,7 @@ Tests use **JUnit 5** (Jupiter).
 
 | Command | What it runs |
 |---|---|
-| `gradle unitTest` | 13 unit tests in `UUIDFormatTest` |
+| `gradle unitTest` | 10 unit tests in `UUIDFormatTest` |
 | `gradle test` | **Disabled** — see below |
 
 #### Why `gradle test` is disabled
@@ -172,12 +188,12 @@ The `check` lifecycle task depends on `unitTest`, so `gradle build` still runs t
 | Plugin ID | `com.th0rn.uuid-plugin` |
 | Group ID | `com.th0rn` |
 | Artifact ID | `uuid-plugin` |
-| Version | `1.0.7` |
+| Version | `1.1.0` |
 | IntelliJ since-build | `251.*` |
 | IntelliJ plugin version | `2.0.0` |
 | Java source/target | `21` |
 | Persisted config file | `uuid-plugin.xml` (IDE config directory) |
-| Plugin ZIP location | `build/distributions/uuid-plugin-1.0.7.zip` |
+| Plugin ZIP location | `build/distributions/uuid-plugin-1.1.0.zip` |
 
 ---
 
