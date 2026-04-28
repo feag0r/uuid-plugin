@@ -2,33 +2,20 @@ package com.th0rn.uuidplugin;
 
 import java.util.UUID;
 
-public enum UUIDFormat {
-    STANDARD("Standard"),
-    UPPER("Upper Case"),
-    NO_DASHES("No Dashes"),
-    CURLY_BRACES("Curly Braces"),
-    UNDERSCORE("Underscore");
+public final class UUIDFormat {
 
-    private final String displayName;
-
-    UUIDFormat(String displayName) {
-        this.displayName = displayName;
+    private UUIDFormat() {
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public String generate() {
+    public static String generate(boolean uppercase, String delimiter, String braces) {
         String hyphenated = UUID.randomUUID().toString();
-        String raw = hyphenated.replace("-", "");
-
-        return switch (this) {
-            case STANDARD -> hyphenated;
-            case UPPER -> hyphenated.toUpperCase();
-            case NO_DASHES -> raw;
-            case CURLY_BRACES -> "{" + hyphenated + "}";
-            case UNDERSCORE -> hyphenated.replace("-", "_");
-        };
+        String withDelimiter = delimiter.isEmpty() ? hyphenated.replace("-", "") : hyphenated.replace("-", delimiter);
+        String cased = uppercase ? withDelimiter.toUpperCase() : withDelimiter;
+        if (braces.isEmpty()) {
+            return cased;
+        }
+        char left = braces.charAt(0);
+        char right = braces.length() >= 2 ? braces.charAt(1) : left;
+        return left + cased + right;
     }
 }

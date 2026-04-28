@@ -29,9 +29,9 @@ public class UUIDInsertAction extends AnAction {
             return;
         }
 
-        UUIDFormat format;
+        UUIDSettings settings;
         try {
-            format = UUIDSettings.getInstance().getFormat();
+            settings = UUIDSettings.getInstance();
         } catch (Exception ex) {
             LOG.error("Failed to get UUID settings", ex);
             return;
@@ -43,7 +43,10 @@ public class UUIDInsertAction extends AnAction {
         record Op(int start, int end, String uuid) {}
 
         var ops = carets.stream()
-                .map(caret -> new Op(caret.getSelectionStart(), caret.getSelectionEnd(), format.generate()))
+                .map(caret -> new Op(
+                        caret.getSelectionStart(),
+                        caret.getSelectionEnd(),
+                        UUIDFormat.generate(settings.isUppercase(), settings.getDelimiter(), settings.getBraces())))
                 .sorted((a, b) -> Integer.compare(b.start, a.start))
                 .toList();
 
@@ -57,7 +60,7 @@ public class UUIDInsertAction extends AnAction {
             }
         });
 
-        LOG.info("Inserted " + ops.size() + " UUID(s) (format: " + format.getDisplayName() + ")");
+        LOG.info("Inserted " + ops.size() + " UUID(s)");
     }
 
     @Override

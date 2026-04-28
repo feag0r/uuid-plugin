@@ -13,14 +13,32 @@ import org.jetbrains.annotations.Nullable;
 )
 public class UUIDSettings implements PersistentStateComponent<UUIDSettings> {
 
-    private UUIDFormat format = UUIDFormat.STANDARD;
+    private boolean uppercase;
+    private String delimiter = "-";
+    private String braces = "";
 
-    public UUIDFormat getFormat() {
-        return format;
+    public boolean isUppercase() {
+        return uppercase;
     }
 
-    public void setFormat(UUIDFormat format) {
-        this.format = format;
+    public void setUppercase(boolean uppercase) {
+        this.uppercase = uppercase;
+    }
+
+    public String getDelimiter() {
+        return delimiter;
+    }
+
+    public void setDelimiter(String delimiter) {
+        this.delimiter = delimiter;
+    }
+
+    public String getBraces() {
+        return braces;
+    }
+
+    public void setBraces(String braces) {
+        this.braces = braces;
     }
 
     @Nullable
@@ -31,7 +49,9 @@ public class UUIDSettings implements PersistentStateComponent<UUIDSettings> {
 
     @Override
     public void loadState(@NotNull UUIDSettings state) {
-        this.format = state.format;
+        this.uppercase = state.uppercase;
+        this.delimiter = state.delimiter;
+        this.braces = state.braces;
     }
 
     public static UUIDSettings getInstance() {

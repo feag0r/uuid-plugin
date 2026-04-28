@@ -30,10 +30,10 @@ export PATH="$HOME/.local/tools/gradle-8.5/bin:$PATH"
 
 | File | Role |
 |---|---|
-| `UUIDFormat.java` | Enum with `generate()` — produces UUID string per format. Pure Java, no IntelliJ deps. |
-| `UUIDSettings.java` | `PersistentStateComponent` — stores user's chosen format. Persisted to `uuid-plugin.xml` in IDE config. |
-| `UUIDInsertAction.java` | `AnAction` — reads format from settings, generates UUID, inserts/replaces at cursor via `WriteCommandAction`. Must use write-safe API. |
-| `UUISettingsConfigurable.java` | `SearchableConfigurable` — settings UI under Tools → UUID Plugin. |
+| `UUIDFormat.java` | Utility class with `generate(uppercase, delimiter, braces)` — produces UUID string per user settings. Pure Java, no IntelliJ deps. |
+| `UUIDSettings.java` | `PersistentStateComponent` — stores user's 3 settings (uppercase, delimiter, braces). Persisted to `uuid-plugin.xml` in IDE config. |
+| `UUIDInsertAction.java` | `AnAction` — reads settings from UUIDSettings, generates UUID via `UUIDFormat.generate()`, inserts/replaces at cursor via `WriteCommandAction`. Must use write-safe API. |
+| `UUIDSettingsConfigurable.java` | `SearchableConfigurable` — settings UI under Tools → UUID Plugin. 3 controls: case checkbox, delimiter text field (max 2 chars), braces text field (max 2 chars), plus live preview. |
 | `plugin.xml` | Plugin descriptor. Registers action (`Ctrl+Shift+U`), settings service, configurable. |
 
 ## Key Details
@@ -43,7 +43,7 @@ export PATH="$HOME/.local/tools/gradle-8.5/bin:$PATH"
 - **Java**: 21
 - **Shortcut**: `Alt+Shift+U`
 - **Action groups**: Added to `EditorPopupMenu` and `ToolsMenu`
-- **UUID formats**: STANDARD, UPPER, NO_DASHES, CURLY_BRACES, UNDERSCORE
+- **UUID format**: Combination of 3 settings — case (upper/lower), delimiter (replaces dashes, up to 2 chars), braces (wraps UUID, up to 2 chars)
 - **Editor behavior**: replaces selected text if any, otherwise inserts at cursor. Single undoable operation.
 - **Artifact location**: `build/distributions/uuid-plugin-1.0.0.zip`
 - **`buildSearchableOptions`** is disabled (skipped).

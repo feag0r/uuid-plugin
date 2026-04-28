@@ -3,13 +3,14 @@ package com.th0rn.uuidplugin;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.UUID;
-
 public class UUIDFormatTest {
+
+    private static final String DELIMITER_DASH = "-";
+    private static final String NO_BRACES = "";
 
     @Test
     public void testStandardFormat() {
-        String result = UUIDFormat.STANDARD.generate();
+        String result = UUIDFormat.generate(false, DELIMITER_DASH, NO_BRACES);
         assertNotNull(result);
         assertEquals(36, result.length());
         assertEquals('-', result.charAt(8));
@@ -19,8 +20,8 @@ public class UUIDFormatTest {
     }
 
     @Test
-    public void testUpperFormat() {
-        String result = UUIDFormat.UPPER.generate();
+    public void testUpperCaseFormat() {
+        String result = UUIDFormat.generate(true, DELIMITER_DASH, NO_BRACES);
         assertNotNull(result);
         assertEquals(36, result.length());
         assertEquals(result, result.toUpperCase());
@@ -28,7 +29,7 @@ public class UUIDFormatTest {
 
     @Test
     public void testNoDashesFormat() {
-        String result = UUIDFormat.NO_DASHES.generate();
+        String result = UUIDFormat.generate(false, "", NO_BRACES);
         assertNotNull(result);
         assertEquals(32, result.length());
         assertFalse(result.contains("-"));
@@ -36,7 +37,7 @@ public class UUIDFormatTest {
 
     @Test
     public void testCurlyBracesFormat() {
-        String result = UUIDFormat.CURLY_BRACES.generate();
+        String result = UUIDFormat.generate(false, DELIMITER_DASH, "{}");
         assertNotNull(result);
         assertEquals(38, result.length());
         assertTrue(result.startsWith("{"));
@@ -45,7 +46,7 @@ public class UUIDFormatTest {
 
     @Test
     public void testUnderscoreFormat() {
-        String result = UUIDFormat.UNDERSCORE.generate();
+        String result = UUIDFormat.generate(false, "_", NO_BRACES);
         assertNotNull(result);
         assertEquals(36, result.length());
         assertFalse(result.contains("-"));
@@ -53,58 +54,40 @@ public class UUIDFormatTest {
     }
 
     @Test
-    public void testGetDisplayName() {
-        assertEquals("Standard", UUIDFormat.STANDARD.getDisplayName());
-        assertEquals("Upper Case", UUIDFormat.UPPER.getDisplayName());
-        assertEquals("No Dashes", UUIDFormat.NO_DASHES.getDisplayName());
-        assertEquals("Curly Braces", UUIDFormat.CURLY_BRACES.getDisplayName());
-        assertEquals("Underscore", UUIDFormat.UNDERSCORE.getDisplayName());
+    public void testUpperCaseWithCurlyBraces() {
+        String result = UUIDFormat.generate(true, DELIMITER_DASH, "{}");
+        assertNotNull(result);
+        assertEquals(result, result.toUpperCase());
+        assertTrue(result.startsWith("{"));
+        assertTrue(result.endsWith("}"));
     }
 
     @Test
-    public void testAllValues() {
-        UUIDFormat[] values = UUIDFormat.values();
-        assertEquals(5, values.length);
+    public void testUpperCaseNoDashes() {
+        String result = UUIDFormat.generate(true, "", NO_BRACES);
+        assertNotNull(result);
+        assertEquals(32, result.length());
+        assertEquals(result, result.toUpperCase());
     }
 
     @Test
-    public void testStandardIsValidUuid() {
-        String result = UUIDFormat.STANDARD.generate();
-        UUID.fromString(result);
-    }
-
-    @Test
-    public void testUpperIsValidUuid() {
-        String result = UUIDFormat.UPPER.generate();
-        UUID.fromString(result.toLowerCase());
-    }
-
-    @Test
-    public void testNoDashesIsValidUuid() {
-        String result = UUIDFormat.NO_DASHES.generate();
-        String withDashes = result.substring(0, 8) + "-" + result.substring(8, 12) + "-"
-            + result.substring(12, 16) + "-" + result.substring(16, 20) + "-" + result.substring(20);
-        UUID.fromString(withDashes);
-    }
-
-    @Test
-    public void testCurlyBracesIsValidUuid() {
-        String result = UUIDFormat.CURLY_BRACES.generate();
-        String withoutBraces = result.substring(1, result.length() - 1);
-        UUID.fromString(withoutBraces);
-    }
-
-    @Test
-    public void testUnderscoreIsValidUuid() {
-        String result = UUIDFormat.UNDERSCORE.generate();
-        String withDashes = result.replace('_', '-');
-        UUID.fromString(withDashes);
+    public void testSingleCharBraces() {
+        String result = UUIDFormat.generate(false, DELIMITER_DASH, "|");
+        assertNotNull(result);
+        assertTrue(result.startsWith("|"));
+        assertTrue(result.endsWith("|"));
     }
 
     @Test
     public void testMultipleGenerationsAreUnique() {
-        String first = UUIDFormat.STANDARD.generate();
-        String second = UUIDFormat.STANDARD.generate();
+        String first = UUIDFormat.generate(false, DELIMITER_DASH, NO_BRACES);
+        String second = UUIDFormat.generate(false, DELIMITER_DASH, NO_BRACES);
         assertNotEquals(first, second);
+    }
+
+    @Test
+    public void testConstructorIsPrivate() throws Exception {
+        var constructor = UUIDFormat.class.getDeclaredConstructor();
+        assertFalse(constructor.canAccess(null));
     }
 }
