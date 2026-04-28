@@ -9,6 +9,10 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.AbstractDocument;
 import java.awt.*;
 
 public class UUIDSettingsConfigurable implements SearchableConfigurable {
@@ -57,6 +61,7 @@ public class UUIDSettingsConfigurable implements SearchableConfigurable {
         settingsPanel.add(new JLabel("Delimiter:"), gbc);
 
         delimiterField = new JTextField(2);
+        addLengthLimit(delimiterField, 2);
         delimiterField.getDocument().addDocumentListener(new SimpleDocumentListener(this::updatePreview));
         gbc.gridx = 1;
         gbc.gridy = 1;
@@ -67,6 +72,7 @@ public class UUIDSettingsConfigurable implements SearchableConfigurable {
         settingsPanel.add(new JLabel("Left brace:"), gbc);
 
         leftBraceField = new JTextField(2);
+        addLengthLimit(leftBraceField, 2);
         leftBraceField.getDocument().addDocumentListener(new SimpleDocumentListener(this::updatePreview));
         gbc.gridx = 1;
         gbc.gridy = 2;
@@ -77,6 +83,7 @@ public class UUIDSettingsConfigurable implements SearchableConfigurable {
         settingsPanel.add(new JLabel("Right brace:"), gbc);
 
         rightBraceField = new JTextField(2);
+        addLengthLimit(rightBraceField, 2);
         rightBraceField.getDocument().addDocumentListener(new SimpleDocumentListener(this::updatePreview));
         gbc.gridx = 1;
         gbc.gridy = 3;
@@ -149,6 +156,25 @@ public class UUIDSettingsConfigurable implements SearchableConfigurable {
     @Override
     public void disposeUIResources() {
         settingsPanel = null;
+    }
+
+    private static void addLengthLimit(JTextField field, int maxLen) {
+        var doc = (AbstractDocument) field.getDocument();
+        doc.setDocumentFilter(new DocumentFilter() {
+            @Override
+            public void insertString(FilterBypass fb, int offset, String str, AttributeSet attr) throws BadLocationException {
+                if ((fb.getDocument().getLength() + str.length()) <= maxLen) {
+                    super.insertString(fb, offset, str, attr);
+                }
+            }
+
+            @Override
+            public void replace(FilterBypass fb, int offset, int length, String str, AttributeSet attrs) throws BadLocationException {
+                if ((fb.getDocument().getLength() - length + str.length()) <= maxLen) {
+                    super.replace(fb, offset, length, str, attrs);
+                }
+            }
+        });
     }
 
     private static class SimpleDocumentListener implements DocumentListener {
