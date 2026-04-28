@@ -24,7 +24,7 @@
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
             <add-to-group group-id="ToolsMenu" anchor="last"/>
             <add-to-group group-id="GenerateGroup" anchor="last"/>
-            <keyboard-shortcut keymap="$default" first-shortcut="Alt+Shift+U"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="alt shift U"/>
         </action>
     </actions>
 </idea-plugin>
