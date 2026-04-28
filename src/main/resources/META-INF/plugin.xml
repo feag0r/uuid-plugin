@@ -3,6 +3,19 @@
     <name>UUID Insert</name>
     <vendor email="th0rn@example.com" url="https://github.com/th0rn/uuid-plugin">th0rn</vendor>
 
+    <description><![CDATA[
+    <p>Insert UUIDs directly into your editor with a single keyboard shortcut (<b>Alt+Shift+U</b>).</p>
+    <p>Supports multiple UUID formats:</p>
+    <ul>
+        <li><b>Standard</b> — 550e8400-e29b-41d4-a716-446655440000</li>
+        <li><b>Upper Case</b> — 550E8400-E29B-41D4-A716-446655440000</li>
+        <li><b>No Dashes</b> — 550e8400e29b41d4a716446655440000</li>
+        <li><b>Curly Braces</b> — {550e8400-e29b-41d4-a716-446655440000}</li>
+        <li><b>Underscore</b> — 550e8400_e29b_41d4_a716_446655440000</li>
+    </ul>
+    <p>If text is selected, the UUID replaces the selection — all in a single undoable operation.</p>
+    ]]></description>
+
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">

@@ -24,7 +24,7 @@ public class UUIDSettingsConfigurable implements SearchableConfigurable {
     @NotNull
     @Override
     public String getId() {
-        return "UUIDPluginSettings";
+        return "com.th0rn.uuidplugin.settings";
     }
 
     @Nullable
@@ -32,8 +32,6 @@ public class UUIDSettingsConfigurable implements SearchableConfigurable {
     public JComponent createComponent() {
         settingsPanel = new JPanel(new BorderLayout(10, 10));
         settingsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        JPanel mainPanel = new JPanel(new GridLayout(2, 1, 0, 10));
 
         JPanel formatPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         formatPanel.add(new JLabel("UUID Format:"));
@@ -51,9 +49,7 @@ public class UUIDSettingsConfigurable implements SearchableConfigurable {
         });
         formatPanel.add(formatComboBox);
 
-        mainPanel.add(formatPanel);
-
-        settingsPanel.add(mainPanel, BorderLayout.CENTER);
+        settingsPanel.add(formatPanel, BorderLayout.NORTH);
         return settingsPanel;
     }
 
@@ -77,22 +73,11 @@ public class UUIDSettingsConfigurable implements SearchableConfigurable {
 
     @Override
     public boolean isModified() {
-        UUIDSettings currentSettings = UUIDSettings.getInstance();
-        for (int i = 0; i < formatComboBox.getItemCount(); i++) {
-            if (formatComboBox.getItemAt(i) == currentSettings.getFormat()) {
-                return false;
-            }
-        }
-        return true;
+        return formatComboBox.getSelectedItem() != settings.getFormat();
     }
 
     @Override
     public void disposeUIResources() {
         settingsPanel = null;
-    }
-
-    @Override
-    public String getHelpTopic() {
-        return "UUIDPluginSettings";
     }
 }
