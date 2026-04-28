@@ -11,6 +11,10 @@ public class UUIDInsertAction extends AnAction {
 
     private static final Logger LOG = Logger.getInstance(UUIDInsertAction.class);
 
+    public UUIDInsertAction() {
+        super("Insert UUID", "Insert UUID at current cursor position", null);
+    }
+
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         var editor = e.getData(CommonDataKeys.EDITOR);
@@ -33,21 +37,27 @@ public class UUIDInsertAction extends AnAction {
             return;
         }
 
-        String uuid = format.generate();
         var document = editor.getDocument();
-        var selection = editor.getSelectionModel();
-        int start = selection.getSelectionStart();
-        int end = selection.getSelectionEnd();
+        var carets = editor.getCaretModel().getAllCarets();
+
+        record Op(int start, int end, String uuid) {}
+
+        var ops = carets.stream()
+                .map(caret -> new Op(caret.getSelectionStart(), caret.getSelectionEnd(), format.generate()))
+                .sorted((a, b) -> Integer.compare(b.start, a.start))
+                .toList();
 
         WriteCommandAction.runWriteCommandAction(project, () -> {
-            if (start != end) {
-                document.replaceString(start, end, uuid);
-            } else {
-                document.insertString(start, uuid);
+            for (var op : ops) {
+                if (op.start != op.end) {
+                    document.replaceString(op.start, op.end, op.uuid);
+                } else {
+                    document.insertString(op.start, op.uuid);
+                }
             }
         });
 
-        LOG.info("Inserted UUID at offset " + start + " (format: " + format.getDisplayName() + ")");
+        LOG.info("Inserted " + ops.size() + " UUID(s) (format: " + format.getDisplayName() + ")");
     }
 
     @Override
