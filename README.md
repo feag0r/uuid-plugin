@@ -4,6 +4,8 @@ A lightweight IntelliJ IDEA plugin that inserts a UUID at the current cursor pos
 
 **Hotkey**: `Alt+Shift+U` | **IDE**: IntelliJ 2025.1+ | **Java**: 21
 
+Works flawlessly in **GigaIDE** (Russian fork of IntelliJ IDEA) as well.
+
 ---
 
 ## Features
@@ -56,7 +58,7 @@ The new format takes effect immediately — no IDE restart required.
 ### From ZIP archive
 
 1. Build the plugin (see [Development](#development) below) or download the release ZIP.
-2. Open IntelliJ IDEA → **File → Settings → Plugins → ⚙️ → Install Plugin from Disk…**.
+2. Open IntelliJ IDEA (or **GigaIDE**) → **File → Settings → Plugins → ⚙️ → Install Plugin from Disk…**.
 3. Select `uuid-plugin-1.0.7.zip`.
 4. Restart the IDE.
 
