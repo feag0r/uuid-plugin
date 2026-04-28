@@ -9,6 +9,7 @@ A lightweight IntelliJ IDEA plugin that inserts a UUID at the current cursor pos
 ## Features
 
 - **Insert UUID at cursor** — press `Alt+Shift+U` to insert a UUID at the current editor position.
+- **Multi-caret support** — place multiple carets and insert a unique UUID at each position.
 - **Replace selected text** — if text is selected before pressing the shortcut, it is replaced with the generated UUID.
 - **Single undoable action** — the insert/replace is wrapped in a `CommandProcessor` command, so one `Ctrl+Z` reverts the entire operation.
 - **Configurable format** — choose from five UUID formats in `Settings → Tools → UUID Plugin`.
@@ -36,6 +37,9 @@ A lightweight IntelliJ IDEA plugin that inserts a UUID at the current cursor pos
 If text is selected, the UUID replaces the selection. You can also trigger the action from:
 - **Editor context menu** (right-click) → *Insert UUID*
 - **Tools menu** → *Insert UUID*
+- **Generate popup** (`Alt+Insert` or Code → Generate) → *Insert UUID*
+
+Multiple carets are supported — each caret gets its own unique UUID in one operation.
 
 ### Changing the format
 
