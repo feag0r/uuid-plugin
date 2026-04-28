@@ -41,7 +41,7 @@ export PATH="$HOME/.local/tools/gradle-8.5/bin:$PATH"
 - **Plugin ID**: `com.th0rn.uuid-plugin`
 - **Target IDE**: IntelliJ 2025.1 (since-build `251.*`)
 - **Java**: 21
-- **Shortcut**: `Ctrl+Shift+U`
+- **Shortcut**: `Alt+Shift+U`
 - **Action groups**: Added to `EditorPopupMenu` and `ToolsMenu`
 - **UUID formats**: STANDARD, UPPER, NO_DASHES, CURLY_BRACES, UNDERSCORE
 - **Editor behavior**: replaces selected text if any, otherwise inserts at cursor. Single undoable operation.
