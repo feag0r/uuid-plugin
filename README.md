@@ -2,6 +2,8 @@
 
 A lightweight IntelliJ IDEA plugin that inserts a UUID at the current cursor position with a single shortcut.
 
+**N.B. Written mostly by LLM DeepSeek v4**
+
 **Hotkey**: `Alt+Shift+U` | **IDE**: IntelliJ 2025.1+ | **Java**: 21
 
 Works flawlessly in **GigaIDE** (Russian fork of IntelliJ IDEA) as well.
